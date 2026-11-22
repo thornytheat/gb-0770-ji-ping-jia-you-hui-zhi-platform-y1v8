@@ -13,6 +13,7 @@
 | M5 库存和签单对账 | 核对罐车与逐票签收差额 | `GET/POST /api/balance` | `app/settlement/inventory.py` `app/settlement/receipts.py` `app/settlement/report.py` | `tests/test_settlement.py` |
 | M6 批次留档复跑 | 保存清单与各阶段快照 | `POST /api/shifts` | `app/ledger/replay.py` `app/ledger/sqlite_book.py` | `tests/test_replay.py` |
 | M7 加注证据签发 | 固定签发证据并复验摘要 | `POST /api/shifts/{batch}/sign` | `app/dispatch/signatures.py` `app/dispatch/document.py` | `tests/test_dispatch.py` |
+| M8 晚到签收补核 | 补件入原班次对账并签发补核单 | `POST /api/shifts/{batch}/supplements` `POST /api/shifts/{batch}/supplements/{id}/sign` | `app/settlement/recheck.py` `app/dispatch/rechecks.py` | `tests/test_recheck.py` |
 
 ## 陷阱登记
 
@@ -27,5 +28,8 @@
 | TRAP-15 | 密度混用 | 吨位严重误算 | 归一单位并做油种范围校验 | `app/conversion/standard.py` | `tests/test_mass.py::test_density_units_normalized` |
 | TRAP-23 | 票据正好位于切换点 | 重叠版本被算两次 | 左闭右开，扫描票内切点 | `app/meters/select.py` | `tests/test_versions.py::test_expiry_is_right_open` |
 | TRAP-25 | 多版本同时生效 | 配置文件顺序决定 | 高修订胜出，并列挂起 | `app/meters/select.py` | `tests/test_versions.py::test_overlap_higher_version_selected` |
+| TRAP-26 | 签收联晚于签单到达 | 改原单或压入下一班次 | 补件只入原班次对账，原单不动仍可复验 | `app/dispatch/rechecks.py` | `tests/test_recheck.py::test_recheck_issue_export_and_original_still_verifiable` |
+| TRAP-27 | 补件与留存件冲突 | 后到的覆盖前件 | 冲突原件全部留存，票仍待核 | `app/settlement/recheck.py` | `tests/test_recheck.py::test_conflicting_supplement_keeps_all_originals` |
+| TRAP-28 | 补件重试或跨批重复 | 重复核销、重复签单 | 内容寻址幂等，重试复用首件结果 | `app/dispatch/rechecks.py` | `tests/test_recheck.py::test_retry_same_supplement_not_refiled` |
 
 样例包含 40 原件、35 采信、4 隔离和 1 重复。两辆库存可核车辆的 510000 g 等于 247600 g 发放、261000 g 期末与 1400 g 差额。另有 FT-23 的 16000 g 已核计量，库存缺期末锚点。

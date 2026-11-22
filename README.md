@@ -6,4 +6,6 @@
 
 从夜班三联单打开仪表回卷证据，比较真实回卷和人工归零，再查看库存差额及签收差。交班页可归档样例或填写完整三份 CSV。前五项 API 支持 GET 调样例和 POST 提交 `tickets`、`receipts`、`stock` 三份 CSV 文本字段。归档后可签发一份 JSON 证据单。
 
+证据单签发后晚到的签收联走补核：`POST /api/shifts/{batch}/supplements` 提交补交签收联 CSV（或 `{"sample":"late"}` 调样例），有效补件重算缺签票的核销结论，冲突原件留存待核；再 `POST .../supplements/{id}/sign` 签发补核单，原证据单不受影响仍可复验。同一补件重试不重复核销，也不再签发。
+
 [换算及字段定义](docs/DATA-DICTIONARY.md) · [业务模块和回归](docs/DEPTH.md)

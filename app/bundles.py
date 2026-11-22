@@ -10,6 +10,10 @@ def sample_set(name):
     return {key:(SAMPLE_PATH/f'{name}-{key}.csv').read_bytes() for key in COLUMNS}
 
 
+def late_sample():
+    return (SAMPLE_PATH/'late-receipts.csv').read_bytes()
+
+
 def submitted():
     if request.method=='GET':
         return sample_set(request.args.get('sample','dirty'))

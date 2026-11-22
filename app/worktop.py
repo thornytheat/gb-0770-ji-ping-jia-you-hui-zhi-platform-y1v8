@@ -8,7 +8,7 @@ from app.ledger.replay import list_shifts
 from app.shift import compute
 
 SECTIONS = {'balance':'库存和签单对账','intake':'仪表与回执采信','versions':'罐车量程配置选版','readings':'两端读数重建',
-            'mass':'密度换算与误差带','shifts':'批次留档复跑','sign':'加注证据签发'}
+            'mass':'密度换算与误差带','shifts':'批次留档复跑','sign':'证据签发与补核'}
 display = Blueprint('ramp',__name__)
 
 
